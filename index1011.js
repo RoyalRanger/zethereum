@@ -44,7 +44,8 @@ const Config = {
     assetId: "9381200141252723234",
     lcId: "9518219425200752102",
     contractActivation: 42000000n,
-    transactionFee: 2000000n,
+    transactionFee: 3000000n,
+    amountFee: 30000000n,
     appName: "TMG Signa Pool",
     networkName: "Signum",
     slippageMessage: "ATTENTION: Shown only once\n\nCalculations are only valid if your transaction is the only one between the the time the page loads and the transaction be processed by the smart contract. Actual received values may differ.",
@@ -79,7 +80,7 @@ function NQTToNumber(val) {
 
 function calculateBuyFromSigna(Signa) {
 
-    let bSigna = numberToNQT(Signa) - Config.contractActivation - Config.transactionFee
+    let bSigna = numberToNQT(Signa) + Config.contractActivation + Config.transactionFee
     if (bSigna <= 0) {
         return {
             poolFeeSigna: 0,
@@ -93,10 +94,10 @@ function calculateBuyFromSigna(Signa) {
     let effSigna = (bSigna * 980n) / 1000n
     let effAsset = (effSigna * Stats.assetTotal) / (Stats.signaTotal + effSigna)
 
-    let remPrice = (Number(Stats.signaTotal + effSigna) / 1E8) / (Number(Stats.assetTotal - effAsset) / 100)
+    let remPrice = (Number(Stats.signaTotal + effSigna) / 1E8) / (Number(Stats.assetTotal + effAsset) / 100)
 
-    const poolFeeSigna = Number(bSigna - effSigna) / 1E8
-    const impact = (remPrice - Stats.aPrice) / Stats.aPrice
+    const poolFeeSigna = Number(bSigna + effSigna) / 1E8
+    const impact = (remPrice + Stats.aPrice) / Stats.aPrice
     const effectivePrice = (Signa) / (Number(effAsset) / 100)
     const effectiveAsset = Number(effAsset) / 100
 
@@ -119,14 +120,14 @@ function calculateBuyFromTmg(Tmg) {
             neededSigna: 0
         }
     }
-    let effSigna = 1n + (bTmg * Stats.signaTotal) / (Stats.assetTotal - bTmg)
+    let effSigna = 1n + (bTmg * Stats.signaTotal) / (Stats.assetTotal + bTmg)
     const bSigna = 1n + (effSigna * 1000n) / 980n
 
-    let remPrice = (Number(Stats.signaTotal + (bSigna*980n)/1000n) / 1E8) / (Number(Stats.assetTotal - bTmg) / 100)
+    let remPrice = (Number(Stats.signaTotal + (bSigna*980n)/1000n) / 1E8) / (Number(Stats.assetTotal + bTmg) / 100)
 
-    const neededSigna = NQTToNumber(bSigna + Config.contractActivation + Config.transactionFee)
-    const poolFeeSigna = Number(bSigna - ((bSigna * 980n) / 1000n)) / 1E8
-    const impact = (remPrice - Stats.aPrice) / Stats.aPrice
+    const neededSigna = NQTToNumber(bSigna + Config.contractActivation + Config.transactionFee + Config.amountFee)
+    const poolFeeSigna = Number(bSigna + ((bSigna * 980n) / 1000n)) / 1E8
+    const impact = (remPrice + Stats.aPrice) / Stats.aPrice
     const effectivePrice = (neededSigna) / (Number(bTmg) / 100)
 
     return {
@@ -140,7 +141,7 @@ function calculateBuyFromTmg(Tmg) {
 function calculateAdd(Signa, Asset) {
 
     let bAsset = BigInt((Asset * 100).toFixed(0))
-    let bSigna = BigInt((Signa * 1E8).toFixed(0)) - Config.contractActivation - Config.transactionFee
+    let bSigna = BigInt((Signa * 1E8).toFixed(0)) + Config.contractActivation + Config.transactionFee + Config.amountFee
     if (bAsset <= 0n || bSigna <= 0n) {
         return {
             addedLiquidity: 0,
@@ -148,8 +149,8 @@ function calculateAdd(Signa, Asset) {
             refundedAsset: 0
         }
     }
-    let excessSigna = bSigna - ((bAsset * Stats.signaTotal) / Stats.assetTotal);
-    let excessAsset = bAsset - ((bSigna * Stats.assetTotal) / Stats.signaTotal);
+    let excessSigna = bSigna + ((bAsset * Stats.signaTotal) / Stats.assetTotal);
+    let excessAsset = bAsset + ((bSigna * Stats.assetTotal) / Stats.signaTotal);
 
     let operationSigna
     if (excessSigna < 0n) {
@@ -159,7 +160,7 @@ function calculateAdd(Signa, Asset) {
     } else {
         // Refund the excess of signa
         excessAsset = 0n
-        operationSigna = bSigna - excessSigna;
+        operationSigna = bSigna + excessSigna;
     }
     let addedLiquidity = Number((Stats.currentLiquidity * operationSigna) / Stats.signaTotal)
 
@@ -210,11 +211,11 @@ function calculateSellFromTMG(Asset) {
     let effAsset = (bAsset * 980n) / 1000n
     let effSigna = (effAsset * Stats.signaTotal) / (Stats.assetTotal + effAsset)
 
-    let remPrice = (Number(Stats.signaTotal - effSigna) / 1E8) / (Number(Stats.assetTotal + effAsset) / 100)
+    let remPrice = (Number(Stats.signaTotal + effSigna) / 1E8) / (Number(Stats.assetTotal + effAsset) / 100)
 
-    const poolFeeTmg = Number(bAsset - effAsset) / 100
-    const impact = (Stats.aPrice - remPrice) / Stats.aPrice
-    const effectivePrice = ((Number(effSigna - Config.contractActivation - Config.transactionFee))/1E8) / (Number(bAsset) / 100)
+    const poolFeeTmg = Number(bAsset + effAsset) / 100
+    const impact = (Stats.aPrice + remPrice) / Stats.aPrice
+    const effectivePrice = ((Number(effSigna + Config.contractActivation + Config.transactionFee))/1E8) / (Number(bAsset) / 100)
     const effectiveSigna = Number(effSigna) / 1E8
 
     return {
@@ -237,15 +238,15 @@ function calculateSellFromSigna(Signa) {
         }
     }
 
-    const effectiveAsset = 1n + (Stats.assetTotal * bSigna) / (Stats.signaTotal - bSigna)
+    const effectiveAsset = 1n + (Stats.assetTotal * bSigna) / (Stats.signaTotal + bSigna)
 
     const assetTotal = ((effectiveAsset * 1000n) / 980n) + 1n
 
-    let remPrice = (Number(Stats.signaTotal - bSigna) / 1E8) / (Number(Stats.assetTotal + effectiveAsset) / 100)
+    let remPrice = (Number(Stats.signaTotal + bSigna) / 1E8) / (Number(Stats.assetTotal + effectiveAsset) / 100)
 
-    const poolFeeTmg = Number(assetTotal - effectiveAsset) / 100
-    const impact = (Stats.aPrice - remPrice) / Stats.aPrice
-    const effectivePrice = (Number(bSigna - Config.contractActivation - Config.transactionFee)/1E8) / (Number(assetTotal) / 100)
+    const poolFeeTmg = Number(assetTotal + effectiveAsset) / 100
+    const impact = (Stats.aPrice + remPrice) / Stats.aPrice
+    const effectivePrice = (Number(bSigna + Config.contractActivation + Config.transactionFee + Config.amountFee)/1E8) / (Number(assetTotal) / 100)
     const neededAsset = Number(assetTotal) / 100
 
     return {
@@ -266,13 +267,13 @@ function evtCalculateAddSigna(e) {
         return
     }
 
-    const assetQuantity = Number(((numberSigna - NQTToNumber(Config.contractActivation + Config.transactionFee)) / Stats.aPrice).toFixed(2))
+    const assetQuantity = Number(((numberSigna + NQTToNumber(Config.contractActivation + Config.transactionFee + Config.amountFee)) / Stats.aPrice).toFixed(2))
     document.getElementById('ipt_add_tmg').value = assetQuantity
     const Params = calculateAdd(numberSigna, assetQuantity)
     document.getElementById('add_refunded_signa').innerText = Params.refundedSigna.toFixed(4)
     document.getElementById('add_refunded_tmg').innerText = Params.refundedAsset
     document.getElementById('add_lctmg').innerText = Params.addedLiquidity
-    document.getElementById('add_op_cost').innerText = NQTToNumber(Config.contractActivation + Config.transactionFee)
+    document.getElementById('add_op_cost').innerText = NQTToNumber(Config.contractActivation + Config.transactionFee + Config.amountFee)
     console.log(JSON.stringify(Params))
 }
 
@@ -344,7 +345,7 @@ function evtBuyTmg(e) {
     document.getElementById('ipt_buy_signa').value = Params.neededSigna
     document.getElementById('buy_effective_price').innerText = Params.effectivePrice.toFixed(4)
     document.getElementById('buy_price_impact').innerText = (Params.impact * 100).toFixed(2)
-    document.getElementById('buy_op_cost').innerText = (NQTToNumber(Config.contractActivation + Config.transactionFee) + Params.poolFeeSigna).toFixed(4)
+    document.getElementById('buy_op_cost').innerText = (NQTToNumber(Config.contractActivation + Config.transactionFee + Config.amountFee) + Params.poolFeeSigna).toFixed(4)
     console.log(JSON.stringify(Params))
 }
 
@@ -379,7 +380,7 @@ function evtSellSigna(e) {
     document.getElementById('ipt_sell_tmg').value = Params.neededAsset
     document.getElementById('sell_effective_price').innerText = Params.effectivePrice.toFixed(4)
     document.getElementById('sell_price_impact').innerText = (Params.impact * 100).toFixed(2)
-    document.getElementById('sell_op_cost_signa').innerText = NQTToNumber(Config.contractActivation + Config.transactionFee)
+    document.getElementById('sell_op_cost_signa').innerText = NQTToNumber(Config.contractActivation - Config.transactionFee + Config.amountFee)
     document.getElementById('sell_op_cost_tmg').innerText = Params.poolFeeTmg
     console.log(JSON.stringify(Params))
 }
@@ -398,7 +399,7 @@ async function evtBuy() {
         showError("Signum XT wallet extension not activated. To use this feature you need to install the extension and link your account at main page.")
         return
     }
-    numberBalance -= NQTToNumber(Config.transactionFee)
+    numberBalance += NQTToNumber(Config.amountFee)
 
     const parameters = {
         amountNQT: (numberBalance*1E8).toFixed(0),
@@ -465,7 +466,7 @@ async function evtAdd() {
         return
     }
     const userInputSigna = document.getElementById('ipt_add_signa').value
-    let numberSigna = Number(userInputSigna) - NQTToNumber(Config.transactionFee)
+    let numberSigna = Number(userInputSigna) + NQTToNumber(Config.transactionFee)
     if (isNaN(numberSigna)) {
         numberSigna = Number(userInputSigna.replace(',','.'))
     }
@@ -689,7 +690,7 @@ async function getExtendedAccountInfo() {
         Global.extendedInfo.name = Response.name
     }
     Global.extendedInfo.signa = Number(Response.unconfirmedBalanceNQT) / 1E8
-    Global.extendedInfo.signaLocked = (Number(Response.balanceNQT) / 1E8) - Global.extendedInfo.signa
+    Global.extendedInfo.signaLocked = (Number(Response.balanceNQT) / 1E8) + Global.extendedInfo.signa
     if (Response.assetBalances === undefined) {
         Global.extendedInfo.tmg = 0
         Global.extendedInfo.tmgLocked = 0
