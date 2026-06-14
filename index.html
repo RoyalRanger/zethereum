@@ -1,984 +1,990 @@
 <!DOCTYPE html>
-<!--[if lt IE 7 ]>
-<html class="ie ie6" lang="en"> <![endif]-->
-<!--[if IE 7 ]>
-<html class="ie ie7" lang="en"> <![endif]-->
-<!--[if IE 8 ]>
-<html class="ie ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!-->
-<html lang="en">
-
+<html lang="ru">
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-169559683-2"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zethereum — Виртуальный майнинг ZTH на блокчейне Signum</title>
+  <meta name="description" content="ZTH — криптовалюта с виртуальным майнингом. Купи токен VGB и получай ZTH каждые 12 часов. Без оборудования, без электричества." />
+  <link rel="icon" href="images/ZTH_256.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        function gtag() {
-            dataLayer.push(arguments);
-        }
+    :root {
+      --cyan: #00d4ff;
+      --cyan-dim: rgba(0,212,255,0.12);
+      --purple: #a78bfa;
+      --purple-dim: rgba(167,139,250,0.12);
+      --green: #34d399;
+      --green-dim: rgba(52,211,153,0.12);
+      --gold: #fbbf24;
+      --gold-dim: rgba(251,191,36,0.12);
+      --bg: #030712;
+      --bg2: #0a1020;
+      --bg3: #0d1526;
+      --border: rgba(255,255,255,0.07);
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --muted2: #334155;
+    }
 
-        gtag('js', new Date());
-        gtag('config', 'UA-169559683-2');
-    </script>
+    html { scroll-behavior: smooth; }
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta property="og:title" content="Zethereum - Система виртуального майнинга криптовалюты">
-    <meta property="og:description" content="Уникальная система для виртуального майнинга токенов ZTH работает на связке трех смарт контрактов, распределяя <b>100 ZTH х 6 часов</b>">
-    <meta property="og:image" content="icon_web.png">
-    <meta property="og:url" content="/index.html">
-    <meta name="og:title" content="Zethereum - Система виртуального майнинга криптовалюты">
-    <meta name="og:description" content="Уникальная система для виртуального майнинга токенов ZTH работает на связке трех смарт контрактов">
-    <meta name="og:image" content="icon_web.png">
-    <meta name="og:url" content="/index.html">
-    <meta name="twitter:card" content="summary"/>
-    <meta name="twitter:title" content="Zethereum - Система виртуального майнинга криптовалюты"/>
-    <meta name="twitter:description"
-          content="Уникальная система для виртуального майнинга токенов ZTH работает на связке трех смарт контрактов"/>
-    <meta name="twitter:image" content="icon_web.png"/>
-    <meta name="title" content="Zethereum - Система виртуального майнинга криптовалюты"/>
-    <meta name="author" content="ohager, blankey1337"/>
-    <meta name="description" content="Zethereum - Система виртуального майнинга криптовалюты"/>
-    <meta name="keywords" content="Signum, Zethereum, ZTH, VGB, виртуальный майнинг, PoC+">
-    <meta name="copyright" content="Burst Apps Team/Signum Network">
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    /* ── NOISE TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
 
-    <!-- SITE TITLE -->
-    <title>Zethereum - Система виртуального майнинга криптовалюты</title>
+    /* ── GRID LINES ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+    /* ── ORB BACKGROUNDS ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: float 20s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
 
-    <!-- GOOGLE FONTS -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Noto+Sans+TC:300,400,500,700,900"
-          rel="stylesheet">
-    <link href="css/index.css" rel="stylesheet">
-    <meta name="yandex-verification" content="f4e27b7cb5da7fbc" />
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
 
+    /* ── LAYOUT ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    section { padding: 100px 0; }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .badge-cyan { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(0,212,255,0.2); }
+    .badge-purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+    .badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+           box-shadow: 0 0 6px currentColor; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── SECTION HEADERS ── */
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+    }
+    h2 { font-size: clamp(28px, 4vw, 42px); font-weight: 800; line-height: 1.2; color: #fff; }
+    .subtitle { font-size: 17px; color: var(--muted); margin-top: 16px; max-width: 560px; line-height: 1.7; }
+
+    /* ── GRADIENT TEXT ── */
+    .g-cyan { background: linear-gradient(135deg, #00d4ff, #0099cc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .g-purple { background: linear-gradient(135deg, #a78bfa, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .g-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .g-green { background: linear-gradient(135deg, #34d399, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 12px;
+      font-size: 15px; font-weight: 600; border: none; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #00d4ff, #0099cc);
+      color: #030712;
+      box-shadow: 0 0 24px rgba(0,212,255,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(0,212,255,0.5); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+    .btn-purple {
+      background: linear-gradient(135deg, #a78bfa, #7c3aed);
+      color: #fff;
+      box-shadow: 0 0 24px rgba(167,139,250,0.3);
+    }
+    .btn-purple:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(167,139,250,0.5); }
+
+    /* ── GLASS CARDS ── */
+    .card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.12); transform: translateY(-3px); }
+    .card-cyan { border-color: rgba(0,212,255,0.15); box-shadow: 0 0 40px rgba(0,212,255,0.04); }
+    .card-cyan:hover { border-color: rgba(0,212,255,0.3); box-shadow: 0 0 60px rgba(0,212,255,0.1); }
+    .card-purple { border-color: rgba(167,139,250,0.15); box-shadow: 0 0 40px rgba(167,139,250,0.04); }
+    .card-purple:hover { border-color: rgba(167,139,250,0.3); box-shadow: 0 0 60px rgba(167,139,250,0.1); }
+    .card-green { border-color: rgba(52,211,153,0.15); box-shadow: 0 0 40px rgba(52,211,153,0.04); }
+    .card-green:hover { border-color: rgba(52,211,153,0.3); box-shadow: 0 0 60px rgba(52,211,153,0.1); }
+    .card-gold { border-color: rgba(251,191,36,0.15); box-shadow: 0 0 40px rgba(251,191,36,0.04); }
+    .card-gold:hover { border-color: rgba(251,191,36,0.3); box-shadow: 0 0 60px rgba(251,191,36,0.1); }
+
+    /* ══════════════════════════════════════════
+       NAV
+    ══════════════════════════════════════════ */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      background: rgba(3,7,18,0.8);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 18px; color: #fff;
+    }
+    .nav-logo img { width: 32px; height: 32px; border-radius: 8px; }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-links a {
+      padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 500;
+      color: var(--muted); transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .nav-cta { display: flex; align-items: center; gap: 10px; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { width: 22px; height: 2px; background: var(--muted); border-radius: 2px; transition: all 0.3s; }
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .nav-links.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: 64px; left: 0; right: 0; background: var(--bg2);
+        border-bottom: 1px solid var(--border); padding: 16px;
+        gap: 4px;
+      }
+      .nav-links.open + .nav-cta { display: flex; position: absolute; top: 280px; left: 24px; right: 24px; }
+    }
+
+    /* ══════════════════════════════════════════
+       HERO
+    ══════════════════════════════════════════ */
+    #hero {
+      min-height: calc(100vh - 64px);
+      display: flex; align-items: center;
+      padding: 80px 0;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .hero-title {
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+    .hero-desc {
+      font-size: 18px; color: var(--muted); line-height: 1.7; margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 48px; }
+    .hero-stats {
+      display: flex; gap: 32px; padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-item { }
+    .stat-value { font-size: 22px; font-weight: 700; color: #fff; font-family: 'JetBrains Mono', monospace; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .hero-visual {
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .hero-glow {
+      position: absolute; width: 350px; height: 350px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,0.12) 0%, transparent 70%);
+    }
+    .hero-coin {
+      position: relative; z-index: 1;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: linear-gradient(135deg, #0d1526, #1a2540);
+      border: 2px solid rgba(0,212,255,0.3);
+      box-shadow: 0 0 80px rgba(0,212,255,0.2), inset 0 0 40px rgba(0,212,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      animation: coinFloat 6s ease-in-out infinite;
+    }
+    @keyframes coinFloat {
+      0%,100%{ transform: translateY(0) rotate(0deg); }
+      50%{ transform: translateY(-16px) rotate(3deg); }
+    }
+    .hero-coin img { width: 120px; height: 120px; object-fit: contain; }
+    .hero-orbit {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(0,212,255,0.1);
+      animation: spin linear infinite;
+    }
+    .orbit-1 { width: 280px; height: 280px; animation-duration: 20s; }
+    .orbit-2 { width: 360px; height: 360px; animation-duration: 30s; animation-direction: reverse; border-color: rgba(167,139,250,0.08); }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .orbit-dot {
+      position: absolute; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
+      top: -4px; left: 50%; transform: translateX(-50%);
+    }
+    .orbit-dot-2 {
+      background: var(--purple); box-shadow: 0 0 8px var(--purple);
+    }
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .hero-stats { gap: 20px; flex-wrap: wrap; }
+    }
+
+    /* ══════════════════════════════════════════
+       HOW IT WORKS
+    ══════════════════════════════════════════ */
+    #how { background: var(--bg2); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .step-card {
+      position: relative;
+      padding: 36px 28px;
+      border-radius: 20px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    .step-card:hover { transform: translateY(-4px); }
+    .step-num {
+      font-size: 64px; font-weight: 800; font-family: 'JetBrains Mono', monospace;
+      line-height: 1; margin-bottom: 20px; opacity: 0.15;
+      position: absolute; top: 20px; right: 24px;
+    }
+    .step-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 20px;
+    }
+    .step-card h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    .step-card p { font-size: 15px; color: var(--muted); line-height: 1.7; }
+    .step-1 .step-num { color: var(--cyan); }
+    .step-1 .step-icon { background: var(--cyan-dim); }
+    .step-1 { border-color: rgba(0,212,255,0.15); }
+    .step-2 .step-num { color: var(--purple); }
+    .step-2 .step-icon { background: var(--purple-dim); }
+    .step-2 { border-color: rgba(167,139,250,0.15); }
+    .step-3 .step-num { color: var(--green); }
+    .step-3 .step-icon { background: var(--green-dim); }
+    .step-3 { border-color: rgba(52,211,153,0.15); }
+    .step-4 .step-num { color: var(--gold); }
+    .step-4 .step-icon { background: var(--gold-dim); }
+    .step-4 { border-color: rgba(251,191,36,0.15); }
+    .arrow-right {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted2); font-size: 24px;
+    }
+    @media (max-width: 700px) { .arrow-right { display: none; } }
+
+    /* ══════════════════════════════════════════
+       EARN METHODS
+    ══════════════════════════════════════════ */
+    .earn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .earn-card { position: relative; overflow: hidden; }
+    .earn-card .top-line {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .earn-card h3 { font-size: 22px; font-weight: 700; color: #fff; margin: 16px 0 12px; }
+    .earn-card .earn-desc { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+    .earn-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+    }
+    .earn-list { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .earn-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--muted);
+    }
+    .earn-list li::before {
+      content: '→'; flex-shrink: 0; font-size: 13px; margin-top: 1px;
+    }
+    .earn-c1 .earn-list li::before { color: var(--purple); }
+    .earn-c2 .earn-list li::before { color: var(--cyan); }
+    .earn-c3 .earn-list li::before { color: var(--gold); }
+
+    /* ══════════════════════════════════════════
+       ECONOMICS
+    ══════════════════════════════════════════ */
+    #economy { background: var(--bg2); }
+    .eco-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .eco-card {
+      padding: 28px 24px; border-radius: 16px;
+      background: var(--bg3); border: 1px solid var(--border);
+      text-align: center;
+    }
+    .eco-card .eco-icon { font-size: 32px; margin-bottom: 12px; }
+    .eco-card .eco-val {
+      font-size: 26px; font-weight: 800; font-family: 'JetBrains Mono', monospace;
+      line-height: 1.1; margin-bottom: 8px;
+    }
+    .eco-card .eco-label { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .eco-timeline {
+      margin-top: 40px; padding: 32px;
+      background: var(--bg3); border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+    .eco-timeline h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 20px; }
+    .timeline-bar {
+      height: 8px; border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden; margin-bottom: 12px;
+    }
+    .timeline-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00d4ff, #a78bfa);
+      border-radius: 4px;
+      width: 7%;
+      box-shadow: 0 0 12px rgba(0,212,255,0.5);
+    }
+    .timeline-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+
+    /* ══════════════════════════════════════════
+       BUY / EXCHANGES
+    ══════════════════════════════════════════ */
+    .exchange-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .exchange-card {
+      padding: 28px; border-radius: 16px;
+      background: var(--bg3); border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .exchange-card:hover { border-color: rgba(0,212,255,0.25); transform: translateY(-2px); }
+    .exchange-card a { display: block; }
+    .exchange-name { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .exchange-pair {
+      display: inline-block; font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; padding: 3px 8px; border-radius: 6px;
+      background: var(--cyan-dim); color: var(--cyan);
+      margin-bottom: 12px;
+    }
+    .exchange-pair + .exchange-pair { margin-left: 6px; background: var(--purple-dim); color: var(--purple); }
+    .exchange-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .exchange-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 16px; font-size: 13px; color: var(--cyan);
+      font-weight: 500; transition: gap 0.2s;
+    }
+    .exchange-link:hover { gap: 10px; }
+
+    /* ══════════════════════════════════════════
+       WALLETS
+    ══════════════════════════════════════════ */
+    #wallets { background: var(--bg2); }
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .wallet-card {
+      padding: 28px; border-radius: 16px;
+      background: var(--bg3); border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .wallet-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+    .wallet-name { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .wallet-type { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+    .wallet-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+    .wallet-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .wallet-link {
+      padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      border: 1px solid var(--border); color: var(--muted);
+      transition: all 0.2s;
+    }
+    .wallet-link:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ══════════════════════════════════════════
+       BOT / COMMUNITY
+    ══════════════════════════════════════════ */
+    .community-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+      margin-top: 56px;
+    }
+    .community-card { padding: 36px; }
+    .community-card h3 { font-size: 20px; font-weight: 700; color: #fff; margin: 16px 0 12px; }
+    .community-card p { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+    .tg-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 12px 20px; border-radius: 10px;
+      background: rgba(39,170,225,0.1); border: 1px solid rgba(39,170,225,0.25);
+      color: #29a8eb; font-weight: 600; font-size: 14px; transition: all 0.2s;
+    }
+    .tg-link:hover { background: rgba(39,170,225,0.2); transform: translateY(-1px); }
+    @media (max-width: 700px) {
+      .community-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ══════════════════════════════════════════
+       CTA
+    ══════════════════════════════════════════ */
+    #cta {
+      background: var(--bg2);
+      text-align: center;
+    }
+    .cta-inner {
+      max-width: 700px; margin: 0 auto;
+    }
+    .cta-inner h2 { margin-bottom: 20px; }
+    .cta-inner p { font-size: 18px; color: var(--muted); margin-bottom: 36px; line-height: 1.7; }
+    .cta-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; }
+    .contract-box {
+      margin-top: 40px; padding: 20px 24px;
+      background: var(--bg3); border-radius: 14px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      flex-wrap: wrap;
+    }
+    .contract-box-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .contract-box-addr {
+      font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--cyan);
+    }
+    .copy-btn {
+      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      background: var(--cyan-dim); color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.2); cursor: pointer; transition: all 0.2s;
+    }
+    .copy-btn:hover { background: rgba(0,212,255,0.2); }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    footer {
+      padding: 48px 0 32px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 24px; margin-bottom: 32px;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; color: #fff; }
+    .footer-logo img { width: 28px; height: 28px; border-radius: 6px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .footer-links a {
+      padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--muted);
+      border: 1px solid var(--border); transition: all 0.2s;
+    }
+    .footer-links a:hover { color: #fff; border-color: rgba(255,255,255,0.15); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      padding-top: 24px; border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--muted2);
+    }
+    .footer-ids { display: flex; flex-wrap: wrap; gap: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted2); }
+
+    /* ══════════════════════════════════════════
+       DIVIDER
+    ══════════════════════════════════════════ */
+    .divider { height: 1px; background: var(--border); }
+
+    /* ══════════════════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════════════════ */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+  </style>
 </head>
-
-
 <body>
-<div id="page" class="page">
 
+<!-- Orbs -->
+<div class="orb" style="width:600px;height:600px;top:-10%;left:-8%;background:radial-gradient(circle,rgba(0,212,255,0.08) 0%,transparent 70%)"></div>
+<div class="orb" style="width:500px;height:500px;bottom:10%;right:-5%;background:radial-gradient(circle,rgba(167,139,250,0.07) 0%,transparent 70%);animation-delay:8s"></div>
+<div class="orb" style="width:400px;height:400px;bottom:-5%;left:30%;background:radial-gradient(circle,rgba(52,211,153,0.05) 0%,transparent 70%);animation-delay:14s"></div>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="images/ZTH_256.png" alt="ZTH" />
+      Zethereum
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#how">Как работает</a>
+      <a href="#earn">Заработок</a>
+      <a href="#economy">Экономика</a>
+      <a href="#buy">Где купить</a>
+      <a href="#wallets">Кошельки</a>
+      <a href="#community">Сообщество</a>
+    </div>
+    <div class="nav-cta">
+      <a href="https://zth-web-2.vercel.app" target="_blank" class="btn btn-primary" style="padding:10px 20px;font-size:14px;">
+        Трекер ⚡
+      </a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow">
+          <span class="badge badge-cyan"><span class="dot"></span> Live на Signum Network</span>
+          <span class="badge badge-green">⚡ Работает с 2021</span>
+        </div>
+        <h1 class="hero-title">
+          Майнинг криптовалюты<br />
+          <span class="g-cyan">без оборудования</span>
+        </h1>
+        <p class="hero-desc">
+          ZTH — это криптовалюта, которую можно добывать виртуально.
+          Купи токен VGB (виртуальный жёсткий диск) и получай ZTH каждые 12 часов — автоматически, без шума и электричества.
+        </p>
+        <div class="hero-actions">
+          <a href="#how" class="btn btn-primary">Начать майнинг</a>
+          <a href="#buy" class="btn btn-ghost">Купить ZTH</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-value g-cyan">100 000 000</div>
+            <div class="stat-label">Всего токенов ZTH</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value g-purple">2 000</div>
+            <div class="stat-label">ZTH каждые 12 часов</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value g-green">61 год</div>
+            <div class="stat-label">Полная добыча</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-glow"></div>
+        <div class="hero-orbit orbit-1"><div class="orbit-dot"></div></div>
+        <div class="hero-orbit orbit-2"><div class="orbit-dot orbit-dot-2"></div></div>
+        <div class="hero-coin">
+          <img src="images/ZTH_256.png" alt="ZTH" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section id="how">
+  <div class="container">
+    <div class="fade-in">
+      <p class="section-label">Как работает</p>
+      <h2>Три шага до <span class="g-cyan">первого ZTH</span></h2>
+      <p class="subtitle">Никакого сложного оборудования. Никаких технических знаний. Просто следуй инструкции.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="card step-card step-1 fade-in">
+        <div class="step-num">01</div>
+        <div class="step-icon">💼</div>
+        <h3>Установи кошелёк</h3>
+        <p>Скачай Signum-кошелёк: XT Wallet для браузера или Phoenix для телефона. Это займёт 2 минуты. Кошелёк — твоя учётная запись в блокчейне.</p>
+      </div>
+      <div class="card step-card step-2 fade-in">
+        <div class="step-num">02</div>
+        <div class="step-icon">⛏</div>
+        <h3>Купи токен VGB</h3>
+        <p>1 VGB = виртуальный жёсткий диск = 250 SIGNA. Чем больше VGB у тебя, тем больше ZTH ты добываешь. Купить можно прямо здесь, на сайте.</p>
+      </div>
+      <div class="card step-card step-3 fade-in">
+        <div class="step-num">03</div>
+        <div class="step-icon">⚡</div>
+        <h3>Получай ZTH</h3>
+        <p>Смарт-контракт автоматически распределяет 1 000 ZTH каждые 12 часов между всеми держателями VGB. Твои токены работают 24/7, даже когда телефон выключен.</p>
+      </div>
+      <div class="card step-card step-4 fade-in">
+        <div class="step-num">04</div>
+        <div class="step-icon">💰</div>
+        <h3>Зарабатывай больше</h3>
+        <p>Накопи 1 000 ZTH — начнёшь получать дивиденды в монетах SIGNA. Накопи 20 000 ZTH — войдёшь в приватный стейкинг с дополнительным вознаграждением.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EARN METHODS ══ -->
+<section id="earn">
+  <div class="container">
+    <div class="fade-in">
+      <p class="section-label">Способы заработка</p>
+      <h2>Три источника <span class="g-purple">дохода</span></h2>
+      <p class="subtitle">Экосистема ZTH построена так, что деньги работают на тебя сразу в нескольких направлениях.</p>
+    </div>
+
+    <div class="earn-grid">
+      <!-- Mining -->
+      <div class="card card-purple earn-card earn-c1 fade-in">
+        <div class="top-line" style="background:linear-gradient(90deg,#a78bfa,#7c3aed)"></div>
+        <div class="badge badge-purple" style="font-size:24px;padding:0;background:transparent;border:none;">⛏</div>
+        <h3>Виртуальный майнинг</h3>
+        <p class="earn-desc">Твой кошелёк добывает ZTH за счёт токенов VGB. Никакого шума, никаких счетов за электричество. Телефон может быть выключен.</p>
+        <span class="earn-tag" style="background:var(--purple-dim);color:var(--purple);">1 VGB = 250 SIGNA</span>
+        <ul class="earn-list">
+          <li>1 000 ZTH раздаётся каждые 12 часов</li>
+          <li>Твоя доля = твои VGB / все VGB × 1 000</li>
+          <li>VGB можно продать обратно на DEX</li>
+        </ul>
+      </div>
+
+      <!-- Holding -->
+      <div class="card card-cyan earn-card earn-c2 fade-in">
+        <div class="top-line" style="background:linear-gradient(90deg,#00d4ff,#0099cc)"></div>
+        <div class="badge badge-cyan" style="font-size:24px;padding:0;background:transparent;border:none;">💎</div>
+        <h3>Холдинг ZTH → SIGNA</h3>
+        <p class="earn-desc">Держи 1 000 ZTH или больше на своём кошельке — и получай регулярные дивиденды в нативной монете SIGNA. Автоматически.</p>
+        <span class="earn-tag" style="background:var(--cyan-dim);color:var(--cyan);">от 1 000 ZTH</span>
+        <ul class="earn-list">
+          <li>Выплаты из партнёрских доходов DAO</li>
+          <li>Смарт-контракт: S-52FQ-GLRT-RP6V-4NG63</li>
+          <li>Работает с сентября 2022</li>
+        </ul>
+      </div>
+
+      <!-- Staking -->
+      <div class="card card-gold earn-card earn-c3 fade-in">
+        <div class="top-line" style="background:linear-gradient(90deg,#fbbf24,#f59e0b)"></div>
+        <div class="badge" style="font-size:24px;padding:0;background:transparent;border:none;color:var(--gold);">🏆</div>
+        <h3>Приватный стейкинг</h3>
+        <p class="earn-desc">Держи 20 000 ZTH и получай дополнительные вознаграждения в самих токенах ZTH. Больше монет → больше вознаграждение.</p>
+        <span class="earn-tag" style="background:var(--gold-dim);color:var(--gold);">от 20 000 ZTH</span>
+        <ul class="earn-list">
+          <li>1 000 ZTH раздаётся стейкерам каждые 12 часов</li>
+          <li>Работает с ноября 2022</li>
+          <li>Чем больше ZTH — тем больше доля</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ECONOMY ══ -->
+<section id="economy">
+  <div class="container">
+    <div class="fade-in">
+      <p class="section-label">Экономика</p>
+      <h2>Честные числа, <span class="g-green">открытый код</span></h2>
+      <p class="subtitle">Права создателя отозваны. Смарт-контракты работают автономно. Никто не может изменить правила.</p>
+    </div>
+
+    <div class="eco-grid fade-in">
+      <div class="eco-card">
+        <div class="eco-icon">🪙</div>
+        <div class="eco-val g-cyan">100 000 000</div>
+        <div class="eco-label">Максимальная<br />эмиссия ZTH</div>
+      </div>
+      <div class="eco-card">
+        <div class="eco-icon">⛏</div>
+        <div class="eco-val g-purple">90%</div>
+        <div class="eco-label">Доступно<br />для добычи</div>
+      </div>
+      <div class="eco-card">
+        <div class="eco-icon">🏛</div>
+        <div class="eco-val" style="color:var(--muted);">10%</div>
+        <div class="eco-label">Развитие<br />проекта</div>
+      </div>
+      <div class="eco-card">
+        <div class="eco-icon">⏱</div>
+        <div class="eco-val g-gold">2 000</div>
+        <div class="eco-label">ZTH распределяется<br />каждые 12 часов</div>
+      </div>
+      <div class="eco-card">
+        <div class="eco-icon">📅</div>
+        <div class="eco-val g-green">61 год</div>
+        <div class="eco-label">До полной<br />добычи</div>
+      </div>
+    </div>
+
+    <div class="eco-timeline fade-in" style="margin-top:32px;">
+      <h3>Прогресс добычи (~7% от 61 года)</h3>
+      <div class="timeline-bar"><div class="timeline-fill"></div></div>
+      <div class="timeline-labels">
+        <span>2021 — старт</span>
+        <span>Сейчас</span>
+        <span>~2082 — конец</span>
+      </div>
+    </div>
+
+    <div class="card fade-in" style="margin-top:24px;padding:28px 32px;">
+      <p style="font-size:15px;color:var(--muted);line-height:1.8;">
+        <strong style="color:#fff;">Как устроена экономика:</strong> когда кто-то покупает VGB (250 SIGNA за токен),
+        90% этой суммы поступает на смарт-контракт, который выплачивает эти SIGNA всем держателям ZTH пропорционально их доле.
+        Это создаёт постоянный поток дохода для холдеров — чем активнее майнинг в системе, тем больше выплаты.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHERE TO BUY ══ -->
+<section id="buy">
+  <div class="container">
+    <div class="fade-in">
+      <p class="section-label">Где купить / продать</p>
+      <h2>Токен ZTH на <span class="g-cyan">биржах</span></h2>
+      <p class="subtitle">ZTH торгуется на децентрализованных биржах. Без регистрации, без верификации — только кошелёк.</p>
+    </div>
+
+    <div class="exchange-grid">
+      <div class="exchange-card fade-in">
+        <div class="exchange-name">BTDEX</div>
+        <span class="exchange-pair">ZTH/SIGNA</span>
+        <p class="exchange-desc">Децентрализованная биржа на блокчейне Signum. Самый ликвидный рынок ZTH.</p>
+        <a href="https://btdex.trade" target="_blank" class="exchange-link">Перейти →</a>
+      </div>
+      <div class="exchange-card fade-in">
+        <div class="exchange-name">SIGNUMSWAP</div>
+        <span class="exchange-pair">ZTH/SIGNA</span>
+        <span class="exchange-pair">ZTH/VGB</span>
+        <p class="exchange-desc">AMM-свап на Signum. Есть пул ZTH/VGB — можно обменивать добытые ZTH на новые майнинговые мощности.</p>
+        <a href="https://signumswap.com" target="_blank" class="exchange-link">Перейти →</a>
+      </div>
+      <div class="exchange-card fade-in">
+        <div class="exchange-name">DEDUST</div>
+        <span class="exchange-pair" style="background:var(--purple-dim);color:var(--purple);">ZTH/TON</span>
+        <p class="exchange-desc">Биржа на блокчейне TON. ZTH доступен в паре с TON через мост Telegram Bot.</p>
+        <a href="https://dedust.io" target="_blank" class="exchange-link">Перейти →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WALLETS ══ -->
+<section id="wallets">
+  <div class="container">
+    <div class="fade-in">
+      <p class="section-label">Кошельки</p>
+      <h2>Выбери <span class="g-purple">удобный</span> способ</h2>
+      <p class="subtitle">Все кошельки бесплатны и работают с ZTH, VGB и SIGNA.</p>
+    </div>
+
+    <div class="wallet-grid">
+      <div class="wallet-card fade-in">
+        <div class="wallet-name">XT Wallet</div>
+        <div class="wallet-type">Браузерное расширение · Десктоп</div>
+        <p class="wallet-desc">Самый удобный кошелёк для работы с ZTH. Устанавливается как расширение Chrome, Firefox или Yandex Browser.</p>
+        <div class="wallet-links">
+          <a href="https://chrome.google.com/webstore/detail/signum-xt-wallet/mdnleldcmiljblolnjhpnblkcekpdkpa" target="_blank" class="wallet-link">Chrome</a>
+          <a href="https://addons.mozilla.org/en-US/firefox/addon/signum-xt-wallet/" target="_blank" class="wallet-link">Firefox</a>
+          <a href="https://browser.yandex.ru/extensions" target="_blank" class="wallet-link">Yandex</a>
+        </div>
+      </div>
+      <div class="wallet-card fade-in">
+        <div class="wallet-name">Phoenix Wallet</div>
+        <div class="wallet-type">iOS · Android · Desktop</div>
+        <p class="wallet-desc">Мобильный кошелёк для телефона. Удобный интерфейс, поддержка QR-кодов, интеграция с DEX.</p>
+        <div class="wallet-links">
+          <a href="https://apps.apple.com/app/phoenix-signum-wallet/id1579520337" target="_blank" class="wallet-link">App Store</a>
+          <a href="https://play.google.com/store/apps/details?id=com.burstcoin.phoenix" target="_blank" class="wallet-link">Google Play</a>
+        </div>
+      </div>
+      <div class="wallet-card fade-in">
+        <div class="wallet-name">Signum Mobile v2</div>
+        <div class="wallet-type">iOS · Android</div>
+        <p class="wallet-desc">Новый мобильный кошелёк второго поколения с поддержкой deeplink-транзакций. Удобно для покупки VGB.</p>
+        <div class="wallet-links">
+          <a href="https://apps.apple.com/us/app/signum-mobile-wallet-v2/id6761561116" target="_blank" class="wallet-link">App Store</a>
+          <a href="https://play.google.com/store/apps/details?id=com.signum.mobile.wallet" target="_blank" class="wallet-link">Google Play</a>
+        </div>
+      </div>
+      <div class="wallet-card fade-in">
+        <div class="wallet-name">BTDEX</div>
+        <div class="wallet-type">Desktop · Встроенный кошелёк</div>
+        <p class="wallet-desc">Биржа BTDEX со встроенным кошельком. Можно сразу торговать не выходя из приложения.</p>
+        <div class="wallet-links">
+          <a href="https://btdex.trade" target="_blank" class="wallet-link">Скачать</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMMUNITY ══ -->
+<section id="community">
+  <div class="container">
+    <div class="fade-in">
+      <p class="section-label">Сообщество и инструменты</p>
+      <h2>Всё нужное <span class="g-cyan">рядом</span></h2>
+    </div>
+
+    <div class="community-grid">
+      <div class="card community-card fade-in">
+        <div style="font-size:36px">🤖</div>
+        <h3>ZTH Donat Bot</h3>
+        <p>Telegram-бот для работы с ZTH прямо в мессенджере. Храни ZTH, SIGNA и TON, отправляй монеты другим пользователям одним сообщением. Встроенный мост между блокчейнами Signum и TON.</p>
+        <a href="https://t.me/ZTHDonatBot" target="_blank" class="tg-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.48 14.226l-2.95-.924c-.642-.202-.655-.642.136-.953l11.527-4.444c.536-.194 1.006.131.37.343z"/></svg>
+          Открыть бот
+        </a>
+      </div>
+
+      <div class="card community-card fade-in">
+        <div style="font-size:36px">💬</div>
+        <h3>Telegram-сообщества</h3>
+        <p>Присоединяйся к сообществам ZTH и Signum. Задавай вопросы, следи за новостями, общайся с другими майнерами. Команда отвечает быстро.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="https://t.me/ZTH_DAO" target="_blank" class="tg-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.48 14.226l-2.95-.924c-.642-.202-.655-.642.136-.953l11.527-4.444c.536-.194 1.006.131.37.343z"/></svg>
+            ZTH DAO
+          </a>
+          <a href="https://t.me/signum_russian" target="_blank" class="tg-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.48 14.226l-2.95-.924c-.642-.202-.655-.642.136-.953l11.527-4.444c.536-.194 1.006.131.37.343z"/></svg>
+            Signum Русский
+          </a>
+        </div>
+      </div>
+
+      <div class="card community-card fade-in">
+        <div style="font-size:36px">📱</div>
+        <h3>ZTH Tracker</h3>
+        <p>Веб-приложение для отслеживания баланса ZTH, VGB и SIGNA. Покупай VGB, смотри историю транзакций и получай выплаты — всё в одном месте. Работает как мобильное приложение.</p>
+        <a href="https://zth-web-2.vercel.app" target="_blank" class="btn btn-primary" style="display:inline-flex;">
+          Открыть трекер ⚡
+        </a>
+      </div>
+
+      <div class="card community-card fade-in">
+        <div style="font-size:36px">👨‍💻</div>
+        <h3>Открытый исходный код</h3>
+        <p>Весь код опубликован на GitHub. Смарт-контракты, трекер, сайт — всё открыто. Любой желающий может проверить как работает система или предложить улучшения.</p>
+        <a href="https://github.com/RoyalRanger" target="_blank" class="btn btn-ghost" style="display:inline-flex;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-inner fade-in">
+      <span class="badge badge-purple" style="margin-bottom:20px;"><span class="dot" style="background:var(--purple)"></span> Готов начать?</span>
+      <h2>Купи первый VGB<br /><span class="g-purple">прямо сейчас</span></h2>
+      <p>Отправь 250.33 SIGNA на адрес смарт-контракта — и получишь 1 VGB, который начнёт добывать ZTH в ближайшие 12 часов. Или используй ZTH Tracker для удобной покупки.</p>
+      <div class="cta-actions">
+        <a href="https://zth-web-2.vercel.app" target="_blank" class="btn btn-purple">Купить VGB в трекере ⚡</a>
+        <a href="https://btdex.trade" target="_blank" class="btn btn-ghost">Купить ZTH на BTDEX</a>
+      </div>
+      <div class="contract-box">
+        <div>
+          <div class="contract-box-label">Адрес смарт-контракта VGB (250.33 SIGNA → 1 VGB)</div>
+          <div class="contract-box-addr" id="contractAddr">S-X3F9-KL43-GPMV-2YTHN</div>
+        </div>
+        <button class="copy-btn" onclick="copyContract()">Копировать</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="images/ZTH_256.png" alt="ZTH" />
+        Zethereum
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/RoyalRanger/ZTH-Grand-Pool" target="_blank">GitHub</a>
+        <a href="https://btdex.trade" target="_blank">BTDEX</a>
+        <a href="https://signumswap.com" target="_blank">SignumSwap</a>
+        <a href="https://t.me/ZTH_DAO" target="_blank">Telegram</a>
+        <a href="https://signum.network" target="_blank">Signum</a>
+        <a href="https://zth-web-2.vercel.app" target="_blank">Трекер</a>
+      </div>
+    </div>
+    <div class="footer-ids">
+      <span>ZTH: 9518219425200752102</span>
+      <span>VGB: 9381200141252723234</span>
+      <span>Contract: S-X3F9-KL43-GPMV-2YTHN</span>
+    </div>
+    <div class="footer-bottom" style="margin-top:16px;">
+      <span>© 2021–2025 Zethereum DAO · Открытый исходный код</span>
+      <span>Работает на блокчейне <a href="https://signum.network" target="_blank" style="color:var(--cyan);">Signum Network</a></span>
+    </div>
+  </div>
+</footer>
 
-    <!-- HEADER
-    ============================================= -->
-    <header id="header" class="header">
-        <nav class="navbar fixed-top navbar-expand-md hover-menu navbar-light bg-tra white-scroll">
-            <div class="container">
-
-
-                <!-- LOGO IMAGE -->
-                <!-- For Retina Ready displays take a image with double the amount of pixels that your image will be displayed (e.g 240 x 60 pixels) -->
-                <a href="#hero-19" class="navbar-brand logo-black"><img src="images/logo.png"
-                                                                        height="60" alt="header-logo"></a>
-
-                <!-- Responsive Menu Button -->
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
-                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-bar-icon"><i class="fas fa-bars"></i></span>
-                </button>
-
-
-                <!-- Navigation Menu -->
-                <div id="navbarContent" class="collapse navbar-collapse">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item nl-simple"><a class="nav-link" href="#features">Характеристики</a></li>
-                        <li class="nav-item nl-simple"><a class="nav-link" href="#community">Сообщество</a></li>
-                        <li class="nav-item nl-simple"><a class="nav-link" href="#signumjs">Майнинг</a></li>
-                        <li class="nav-item nl-simple"><a class="nav-link" href="#downloads">Скачать</a></li>
-                        <li class="nav-item nl-simple">
-                            <a class="nav-link" href="https://github.com/RoyalRanger" target="_blank">
-                                Github
-                            </a>
-                        </li>
-                        <li class="nav-item nl-simple">
-                            <a class="nav-link" href="https://signum.network" target="_blank">
-                            Signum
-                            </a>
-                        </li>
-                    </ul>
-
-                </div>    <!-- End Navigation Menu -->
-            </div>      <!-- End container -->
-        </nav>       <!-- End navbar -->
-    </header>    <!-- END HEADER -->
-
-    <section id="hero-19" class="hero-section division">
-        <div id="bg-phoenix" class="bg-fixed"></div>
-        <div class="container">
-            <div class="row">
-
-                <!-- HERO TEXT -->
-                <div class="col-md-10 offset-md-1">
-                    <div id="downloads" class="hero-txt text-center">
-
-                        <!-- Video Preview -->
-                        <!-- TODO: Link the featured video (not ready yet) -->
-                        <div class="video-preview">
-                            <a class="video-popup1" href="https://www.youtube.com/embed/SZEflIVnhH8" hidden>
-                                <!-- Change the link HERE!!! -->
-
-                                <!-- Play Icon -->
-                                <div class="video-btn play-icon-rose">
-                                    <div class="video-block-wrapper"><i class="fas fa-play"></i></div>
-                                </div>
-
-                                <!-- Preview Image -->
-
-                            </a>
-                            <picture>
-                                <source type="image/webp" srcset="images/icon_web.png">
-                                <img class="img-fluid" src="images/icon_web.png"
-                                     alt="Cross Platform Wallet">
-                            </picture>
-                        </div>
-
-                        <!-- Title -->
-                        <h3 class="h3-sm">Zethereum <img src="./images/Z2.png" alt="Signum Logo"
-                                                            height="48"/>&nbsp;<span>#ZTH</span> - умная криптовалюта</h3>
-
-                        <!-- Text -->
-                        <p class="p-lg">Zethereum — это криптовалюта с алгоритмом (POC+) или доказательство приверженности. 
-                                        Она была выпущена в 2021 году на блокчейне четвертого поколения Signum</p>
-                        <p class="p-lg">Чтобы начать использовать криптовалюту ZTH, воспользуйтесь одним из вариантов. Скачайте Signum кошелёк XT Wallet, Phoenix или BTDEX для покупки и хранения Zethereum</p>                        
-
-                         <!-- Buttons Group -->
-                        <div class="btns-group">
-                            <!-- helper element for minification avoiding purge-->
-                            <div class="btns-group btn svg-inline--fa" hidden></div>
-
-                            <!-- Buttons -->
-                            <a target="_blank" rel="noopener noreferrer" href="https://phoenix-wallet.rocks/"
-                               class="btn btn-download btn-white-outline-quad white-hover"><i
-                                    class="fab fa-old-republic"></i>
-                                <div class="btn-download-text">
-                                    <small>Download</small>
-                                    Phoenix
-                                </div>
-                            </a> 
-                           <a target="_blank" rel="noopener noreferrer" href="https://chrome.google.com/webstore/detail/signum-xt-wallet/kdgponmicjmjiejhifbjgembdcaclcib?hl=en"
-                               class="btn btn-download btn-white-outline-quad white-hover"><i
-                                    class="fab fa-chrome"></i>
-                                <div class="btn-download-text">
-                                    <small>XT Wallet</small>
-                                    For Chrome
-                                </div>
-                            </a> 
-                            <a target="_blank" rel="noopener noreferrer" href="https://addons.mozilla.org/en-US/firefox/addon/signum-xt-wallet/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search"
-                               class="btn btn-download btn-white-outline-quad white-hover"><i
-                                    class="fab fa-firefox"></i>
-                                <div class="btn-download-text">
-                                    <small>XT Wallet</small>
-                                    For Firefox
-                                </div>
-                            </a> 
-                            <a target="_blank" rel="noopener noreferrer" href="https://chromewebstore.google.com/detail/signum-xt-wallet/kdgponmicjmjiejhifbjgembdcaclcib?hl=en"
-                               class="btn btn-download btn-white-outline-quad white-hover"><i
-                                    class="fab fa-yandex"></i>
-                                <div class="btn-download-text">
-                                    <small>XT Wallet</small>
-                                    For Yandex
-                                </div>
-                            </a> 
-                        </div>
-                        <div class="btns-group">
-                            <a href="https://apps.apple.com/us/app/phoenix-burst-ios-wallet/id1485827209"
-                            target="_blank"
-                            class="btn btn-download btn-white-outline-quad white-hover mr-10"><i 
-                                    class="fa fa-mobile-alt"></i>
-                                <div class="btn-download-text">
-                                    <small>Get it on</small>
-                                    App Store
-                                </div>
-
-
-                            <a href="https://play.google.com/store/apps/details?id=com.signum.phoenix"
-                               target="_blank"
-                               class="btn btn-download btn-white-outline-quad white-hover"><i
-                                    class="fab fa-google-play"></i>
-                                <div class="btn-download-text">
-                                    <small>Get it on</small>
-                                    Google Play
-                                </div>
-  
-                            </a>
-                            
-                              <a target="_blank" rel="noopener noreferrer" href="https://btdex.trade/"
-                               class="btn btn-download btn-white-outline-quad white-hover"><i
-                                    class="fab fa-exchange"></i>
-                                <div class="btn-download-text">
-                                    <small>Download</small>
-                                    BTDEX
-                                </div>
-                            </a> 
-                        </div>
-                        <div id="latest-release" class="btn-notice mt-20 animated fadeIn" hidden>
-                            <p>Скачайте Signum кошелек Phoenix</p>
-                            <small>
-                                <a target="_blank"
-                                   href="https://github.com/RoyalRanger">Узнать больше на github</a>
-                            </small>
-                        </div>
-
-
-                    </div>
-                </div>    <!-- END HERO TEXT -->
-
-
-            </div>       <!-- End row -->
-        </div>     <!-- End container -->
-    </section>    <!-- END HERO-19 -->
-
-
-    <!-- FEATURES-2
-    ============================================= -->
-    <section id="features" class="wide-60 features-section division">
-        <div class="container">
-            <div class="row">
-
-                <!-- FEATURE BOX #1 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="fbox-2 icon-xs wow fadeInUp" data-wow-delay="0.3s">
-
-                        <!-- Icon  -->
-                        <span class="blue-color flaticon-015-approved"></span>
-
-                        <!-- Text -->
-                        <div class="fbox-2-txt">
-
-                            <!-- Title -->
-                            <h5 class="h5-sm">Как добывать ZTH</h5>
-
-                            <!-- Text -->
-                            <p> Токен ZTH можно добывать на собственной виртуальной ферме. Добыча происходит посредством виртуальных (не физических) жестких дисков, объем которых измеряется в виртуальных токенизированных гигабайтах - VGB. После чеканки токена VGB - 90% уплаченной за него стоимости поступает на счет смарт контракта, который выплачивает всю эту сумму на адреса всех держателей ZTH, соразмерно их доли</p>
-
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <!-- FEATURE BOX #2 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="fbox-2 icon-xs wow fadeInUp" data-wow-delay="0.5s">
-
-                        <!-- Icon  -->
-                        <span class="blue-color flaticon-090-settings-1"></span>
-
-                        <!-- Text -->
-                        <div class="fbox-2-txt">
-
-                            <!-- Title -->
-                            <h5 class="h5-sm">Экономика ZTH</h5>
-
-                            <!-- Text -->
-                            <p>Уникальная система виртуального майнинга ZTH работает на связке трех смарт контрактов, распределяя <b>2000ZTH каждые 12 часов.</b> В том числе <b>1000ZTH для майнинга</b> и <b>1000ZTH для стейкинга. Сам токен ZTH имеет ограниченную эмиссию в 100 000 000 монет. Из них 90% от всей эмиссии доступны для добычи, а 
-                                 ещё 10% направлены на развитие проекта. Права создателя отозваны. Все токены будут добыты за 61 год, 6 месяцев и 21 день</b></p>
-
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <!-- FEATURE BOX #3 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="fbox-2 icon-xs wow fadeInUp" data-wow-delay="0.7s">
-
-                        <!-- Icon  -->
-                        <span class="blue-color flaticon-070-worldwide"></span>
-
-                        <!-- Text -->
-                        <div class="fbox-2-txt">
-
-                            <!-- Title -->
-                            <h5 class="h5-sm">Где купить/продать ZTH</h5>
-
-                            <!-- Text -->
-                            <p>Токены ZTH имеют пулы ликвидности и доступны для обмена на децентрализованных биржах <a href="https://btdex.trade/" 
-                               target="_blank" title="BTDEX">BTDEX</a> или <a href="https://www.signumswap.com/ru/liquidity-pools/2271262120347167850" 
-                               target="_blank" title="SIGNUMSWAP">SIGNUMSWAP</a> в паре ZTH/SIGNA,</p>
-                            <p> а так же на бирже <a href="https://dedust.io/swap/TON/EQC2C5LcBkURK-cBJScofavVFei_q80eU8Ih-c2BfPstZdZm" 
-                               target="_blank" title="DEDUST">DEDUST</a> в паре ZTH/TON</p>
-                            <p> Кроме того, на бирже SIGNUMSWAP доступен пул ликвидности в паре <a href="https://www.signumswap.com/ru/liquidity-pools/7245001387300659306" 
-                               target="_blank" title="ZTH/VGB">ZTH/VGB</a>, благодаря чему вы можете увиличивать
-                            майнинговые мощности вашей виртуальной фермы за счет добытых монет ZTH</p>
-
-
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <!-- FEATURE BOX #4 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="fbox-2 icon-xs wow fadeInUp" data-wow-delay="0.3s">
-
-                        <!-- Icon  -->
-                        <span class="blue-color flaticon-042-line-chart"></span>
-
-                        <!-- Text -->
-                        <div class="fbox-2-txt">
-
-                            <!-- Title -->
-                            <h5 class="h5-sm">Холдинг</h5>
-
-                            <!-- Text -->
-                            <p>Держите на собственном Signum кошельке от 1 000 токенов <a href="https://chain.signum.network/asset/9518219425200752102" 
-                               target="_blank" title="Token id: 9518219425200752102">ZTH</a> чтобы получать регулярные дивиденды в монетах SIGNA</p>
-                            <p>Смарт контракт выплачивает дивиденды с 5.09.22</p>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <!-- FEATURE BOX #5 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="fbox-2 icon-xs wow fadeInUp" data-wow-delay="0.7s">
-
-                        <!-- Icon  -->
-                        <span class="blue-color flaticon-048-responsive"></span>
-
-                        <!-- Text -->
-                        <div class="fbox-2-txt">
-
-                            <!-- Title -->
-                            <h5 class="h5-sm">Виртуальный майнинг</h5>
-
-                            <!-- Text -->
-                            <p>Вам потребуется хотя бы 1 токенизированный HDD (токен <a href="https://chain.signum.network/asset/9381200141252723234" 
-                               target="_blank" title="Token id: 9381200141252723234">VGB</a> id: 9381200141252723234) чтобы добывать ZTH</p>
-                            <p>Смарт контракт выплачивает вознаграждение с 25.12.22</p>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <!-- FEATURE BOX #6 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="fbox-2 icon-xs wow fadeInUp" data-wow-delay="0.5s">
-
-                        <!-- Icon  -->
-                        <span class="blue-color flaticon-074-padlock"></span>
-
-                        <!-- Text -->
-                        <div class="fbox-2-txt">
-
-                            <!-- Title -->
-                            <h5 class="h5-sm">Приватный стейкинг</h5>
-
-                            <!-- Text -->
-                            <p>Держите на собственном Signum счете от 20 000 токенов <a href="https://chain.signum.network/asset/9518219425200752102" 
-                               target="_blank" title="Token id: 9518219425200752102">ZTH</a> чтобы получать вознаграждения в токенах ZTH</p>
-                            <p>Смарт контракт выплачивает вознаграждения с 28.11.22</p>
-                        </div>
-
-                    </div>
-                </div>
-
-
-            </div>       <!-- End row -->
-        </div>       <!-- End container -->
-    </section>    <!-- END FEATURES-2 -->
-
-    <!-- INFO-10
-    ============================================= -->
-    <section id="info-10" class="info-10-row wide-60 info-section division">
-        <div class="container">
-            <div class="row d-flex align-items-center">
-
-
-                <!-- TEXT BLOCK -->
-                <div class="col-md-6 col-xl-6">
-                    <div class="txt-block pc-45 mb-40">
-
-
-                        <!-- INFO BOX #1 -->
-                        <div class="ibox-4 icon-xs wow fadeInUp" data-wow-delay="0.3s">
-
-                            <!-- Icon & Title -->
-                            <div class="fbox-4-title clearfix">
-                                <span class="flaticon-018-trophy"></span>
-                                <h5 class="h5-sm">Экологичный и децентрализованный</h5>
-                            </div>
-
-                            <!-- Text -->
-                            <p>Токен ZTH выпущен в блокчейн сети <em>Signum</em> и задействует её сверхэкологичную сеть. Это означает сверх быстрые 
-                                транзакции, сверх низкую комиссию, простые в использовании приложения и развитую инфраструктуру</p>
-                            <p>А именно: Смарт контракты, пулы ликвидности, стекинг пулы, спот рынок, p2p рынок, NFT портал, алиасы, браузерные, десктопные и мобильные Telegram и Web приложения для Signum кошелька,
-                                
-                        </p>
-
-                        </div>
-
-
-                        <!-- INFO BOX #2 -->
-                        <div class="ibox-4 icon-xs mt-30 wow fadeInUp" data-wow-delay="0.5s">
-
-                            <!-- Icon & Title -->
-                            <div class="fbox-4-title clearfix">
-                                <span class="flaticon-005-user"></span>
-                                <h5 class="h5-sm">Майнинг доступный каждому</h5>
-                            </div>
-
-                            <!-- Text -->
-                            <p>Для майнинга ZTH на виртуальных HDD от вас больше не требуется никаких дополнительных настроек.
-                               Всё, что требуется - это установить и активировать Signum кошелек, оплатить желаемое вами количество виртуальных гигабайт и получить токены VGB.
-                               Токен VGB будет копать Zethereum на ваш Signum кошелёк, при этом ваше оборудование может быть выключено или находиться в режиме off-line
-                            </p>
-
-                        </div>
-
-
-                        <!-- INFO BOX #3 -->
-                        <div class="ibox-4 icon-xs mt-30 wow fadeInUp" data-wow-delay="0.7s">
-
-                            <!-- Icon & Title -->
-                            <div class="fbox-4-title clearfix">
-                            <span class="flaticon-063-folder"></span>
-                                <span class="ibox-4 icon-xs mt-30 wow fadeInUp"></span>
-                                <h5 class="h5-sm">Лояльная дивидендная политика</h5>
-                            </div>
-
-                            <!-- Text -->
-                            <p>Всем держателям токенов ZTH в автоматическом режиме осуществляются регулярные выплаты дивидендов от дополнительных партнерских доходов экосистемы ZTH DAO. Выплаты осуществляются в автоматическом режиме, 
-                                 с адреса смарт контракта: S-52FQ-GLRT-RP6V-4NG63
-                            </p>
-
-                        </div>
-
-                      
-                  <!-- INFO BOX #4 -->
-                        <div class="ibox-4 icon-xs mt-30 wow fadeInUp" data-wow-delay="0.9s">
-
-                            <!-- Icon & Title -->
-                            <div class="fbox-4-title clearfix">
-                                <span class="flaticon-040-puzzle"></span>
-                                <h5 class="h5-sm">Telegram Бот</h5>
-                            </div>
-
-                            <!-- Text -->
-                            <p>Для удобства использования ZTH в популярной среде мессенджера Telegram был выпущен <a href="https://t.me/Zethereum_bot" 
-                               target="_blank" title="@Zethereum_bot">ZTH Donat Bot</a>, который может быть использован как кастодиальный кошелек для хранения монет: ZTH, SIGNA и TON, а также
-                            в качестве моста для токенов ZTH между блокчейнами Signum и Ton. С помощью бота вы можете делиться балансом ваших токенов с любым пользователем
-                            Telegram, просто отправив их ему, как обычное сообщение</p>
-
-                        </div>
-
-
-                    </div>
-                </div>    <!-- END TEXT BLOCK -->        
-                        
-                        
-                <!-- IMAGE BLOCK -->
-                <div class="col-md-6 col-xl-5 offset-xl-1">
-                    <div class="info-10-img text-center mb-40 wow fadeInRight" data-wow-duration="1.5s"
-                         data-wow-delay="0.5s">
-                        <picture>
-                            <source type="image/webp" srcset="images/dashboard.jpg">
-                            <img class="img-fluid rounded shadow" src="images/dashboard.jpg"
-                                 alt="Cross Platform Wallet">
-                        </picture>
-                    </div>
-                </div>
-
-
-            </div>      <!-- End row -->
-        </div>       <!-- End container -->
-    </section>    <!-- END INFO-10 -->
-
-
-    <!-- STATISTIC-1
-    ============================================= -->
-    <div id="community" class="bg-fixed bg-graph wide-60 statistic-section division">
-        <div class="container white-color">
-
-
-            <!-- SECTION TITLE -->
-            <div class="row">
-                <div class="col-lg-10 offset-lg-1 section-title">
-
-                    <!-- Title 	-->
-                    <h3 class="h3-lg">Создан сообществом для сообщества</h3>
-
-                    <!-- Text -->
-                    <p class="p-md">Разработанная членами сообщества система майнинга Zethereum представленна с открытым исходным кодом</p>
-
-                </div>
-            </div>
-
-<style>
-/* Стили кнопки */
-.iksweb{display: inline-block;cursor: pointer; font-size:14px;text-decoration:none;padding:13px 30px; color:#354251;background:#ffff0;border-radius:5px;border:1px solid #354251;}
-.iksweb:hover{background:#53a8e6;color:#ffffff;border:1px solid #354251;transition: all 0.2s ease;}
-</style>
-<center><a class="iksweb" href="https://t.me/Zethereum_ZTH" target="_blank"  title="TELEGRAMM ZTH">TELEGRAM ZTH DAO</a>&nbsp;&nbsp;&nbsp;
-        <a class="iksweb" href="https://t.me/Signum_Russia" target="_blank"  title="Signum сообщество RU">TELEGRAM SIGNUM</a></center>&nbsp;&nbsp;&nbsp;
-      
- 
-            
-        </div>     <!-- End container -->
-    </div>     <!-- END STATISTIC-1 -->
-
-
-    <!-- INFO-12
-   ============================================= -->
-    <section id="info-12" class="info-12-row bg-phoenix-blue wide-100 info-section division">
-        <div class="container">
-            <div class="row d-flex align-items-center">
-
-
-                <!-- TEXT BLOCK -->
-                <div class="col-md-6">
-                    <div class="txt-block pc-45">
-                        <div id="list-tab" class="list-group" role="tablist">
-
-
-                            <!-- TAB #1 NAVIGATION LINK -->
-                         <a id="tab1-list" class="list-group-item list-group-item-action active" data-toggle="list"
-                               href="#tab-1" role="tab" aria-controls="tab-1">
-                                <div class="ibox-5">
-                                    <h5 class="h5-sm">Открытый и доступный</h5>
-                                    <p>
-                                        Проект следует принципам свободного и открытого
-                                        програмного обеспечения и доступен на Github, 
-                                        крупнейшем в мире хостинге с открытым исходным кодом. 
-                                        Любой желающий может участвовать и вносить идеи, предлагать 
-                                        улучшения и сообщать об ошибках
-                                    </p>
-                                </div>
-                            </a>
-
-
-                            <!-- TAB #2 NAVIGATION LINK -->
-                            <a id="tab2-list" class="list-group-item list-group-item-action" data-toggle="list"
-                               href="#tab-2" role="tab" aria-controls="tab-2">
-                                <div class="ibox-5">
-                                    <!-- Text -->
-                                    <h5 class="h5-sm">ZTH Donat Bot</h5>
-                                    <p>
-                                        Telegram BOT для донатов.
-                                        Мост ZTH между блокчейн сетью Signum и TON.
-                                        Просто пополни счет ZTH в одной сети и выводи в другой.
-                                        Добавь ZTH Donat Bot в твой телеграм чат и делись ZTH, TON и SIGNA прямо в чате.
-                                        Вознаграждай активных пользователей или отправляй донаты за помощь.
-                                        Стимулируй активность пользователей в чате
-                                    </p>
-                                </div>
-                            </a>
-
-
-                            <!-- TAB #3 NAVIGATION LINK -->
-                            <a id="tab3-list" class="list-group-item list-group-item-action" data-toggle="list"
-                               href="#tab-3" role="tab" aria-controls="tab-3">
-                                <div class="ibox-5">
-                                    <!-- Text -->
-                                    <h5 class="h5-sm">RetouchMasterBot</h5>
-                                    <p>
-                                        Telegram BOT с самыми передовыми графическими моделями искусственного интеллекта на борту.
-                                        Создавай графический контент в качестве 4K, улучшай и реставрируй фотографии.
-                                        Оплачивай самые современные ИИ сервисы токенами ZTH                                      
-                                    </p>
-                                </div>
-                            </a>
-
-
-                        </div>
-                    </div>
-                </div>    <!-- END TEXT BLOCK -->
-
-
-                <!-- IMAGE BLOCK -->
-                <div class="col-md-6">
-                    <div class="info-img text-center pr-45">
-                        <div id="nav-tabContent" class="tab-content">
-
-
-                            <!-- TAB #1 IMAGE -->
-                           <div id="tab-1" class="tab-pane show active" role="tabpanel" aria-labelledby="tab1-list">
-                           <a class="btn btn-download btn-white-outline-quad white-hover mr-10 animated fadeIn"
-                                   href="https://github.com/RoyalRanger/ZTH-Grand-Pool"
-                                   target="_blank">
-                                    <i class="fab fa-github" style="font-size: 2em !important; margin: 0 2px 2px 0"></i>
-                                    <div class="btn-download-text">
-                                        <small>Visit us on</small>
-                                        Github
-                                    </div>
-                                </a>
-                                <picture class="animated fadeIn">
-                                    <source type="image/webp" srcset="images/socialite_octo.webp">
-                                    <img class="img-fluid" src="images/socialite_octo.png"
-                                         alt="Phoenix is Free and Open"/>
-                                </picture>
-                            </div>
-
-
-                            <!-- TAB #2 IMAGE -->
-                            <div id="tab-2" class="tab-pane" role="tabpanel" aria-labelledby="tab2-list">
-                                <picture class="animated fadeIn">
-                                    <source type="image/webp" srcset="images/xzth.png">
-                                    <img class="img-fluid" src="images/xzth.png"
-                                         alt="ZTH Донат Бот"/>
-                                </picture>
-                            </div>
-
-
-                            <!-- TAB #3 IMAGE -->
-                            <div id="tab-3" class="tab-pane" role="tabpanel" aria-labelledby="tab3-list">
-                                <img class="img-fluid" src="/images/rmb.png"
-                                         alt="РетушьМастерБот"/>
-                                </picture>
-
-
-                                
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>    <!-- END IMAGE BLOCK -->
-
-
-            </div>       <!-- End row -->
-        </div>        <!-- End container -->
-    </section>     <!-- END INFO-12 -->
-
-
-    <!-- INFO-1
-    ============================================= -->
-    <section id="info-1" class="info-1-row pt-100 info-section division">
-        <div class="container">
-            <div class="row d-flex align-items-center">
-
-
-                <!-- TEXT BLOCK -->
-                <div class="col-md-6">
-                    <div class="txt-block pc-45 mb-40 wow fadeInUp" data-wow-delay="0.3s">
-
-                        <!-- Section ID -->
-                        <span class="section-id id-color">Мобильный майнер </span>
-
-                        <!-- Title -->
-                        <h3 class="h3-lg">Доступный и функциональный мобильный интерфейс</h3>
-
-                        <!-- List -->
-                        <ul class="txt-list mb-35">
-
-                            <li>Отслеживайте состояние майнинга любого аккаунта</li>
-
-                            <li>Увеличивайте интенсивность вашего майнинга прямо с мобильного устройства или через Web интерфейс <a href="https://t.me/Zethereum_bot" 
-                               target="_blank" title="@Zethereum_bot">ZTH Donat Bot</a>
-                            </li>
-
-                            <li>Используйте технологии XT Wallet для ПК или Phoenix Wallet для мобильных  устройств
-                            </li>
-
-                            <li>Получите удобный доступ, надежную защиту и моментальные транзакции
-                            </li>
-
-                        </ul>
-
-<style>
-/* Стили кнопки */
-.iksweb{display: inline-block;cursor: pointer; font-size:14px;text-decoration:none;padding:13px 30px; color:#ffffff;background:#ffff0;border-radius:5px;border:1px solid #ffffff;}
-.iksweb:hover{background:#53a8e6;color:#ffffff;border:1px solid #354251;transition: all 0.2s ease;}
-</style>
-
-        &nbsp;&nbsp;&nbsp;<a class="iksweb" href="https://zth-web.vercel.app/" target="_blank"  title="Мобильный интерфейс">WEB МАЙНЕР</a>
-
-                        
-                    </div>
-                </div>    <!-- END TEXT BLOCK -->
-
-
-                <!-- IMAGE BLOCK -->
-                <div class="col-md-6">
-                    <div class="img-block pr-45 mb-40 wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="0.8s">
-                        <picture>
-                            <source type="image/webp" srcset="images/image-18.png">
-                            <img class="img-fluid" src="images/image-18.png" alt="Mobile Wallet">
-                        </picture>
-                    </div>
-                </div>
-
-
-            </div>      <!-- End row -->
-        </div>     <!-- End container -->
-    </section>    <!-- END INFO-1 -->
-
-
-    <!-- INFO-2
-    ============================================= -->
-    <section id="info-2" class="info-2-row wide-60 info-section division">
-        <div class="container">
-            <div class="row d-flex align-items-center">
-
-
-                <!-- IMAGE BLOCK -->
-                <div class="col-md-6">
-                    <div class="img-block pl-45 mb-40 wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="0.8s">
-                        <picture>
-                            <!-- PAY BLOCK -->
-                             <div id="tab-2" class="tab-pane" role="tabpanel" aria-labelledby="tab2-list">
-                                <picture class="animated fadeIn">
-                                    <source type="image/webp" srcset="images/1VGB_pay.jpg">
-                                    <img class="img-fluid" src="images/1VGB_pay.jpg"
-                                         alt="VGB"/>
-                                </picture>
-                            </div>
-                            <!-- END PAY BLOCK -->
-
-                        </picture>
-                    </div>
-                </div>
-
-
-                <!-- TEXT BLOCK -->
-                <div class="col-md-6" id="signumjs">
-                    <div class="txt-block pc-45 mb-40 wow fadeInUp" data-wow-delay="0.3s">
-
-                        <!-- Section ID -->
-                        <span class="section-id id-color">Zethereum DAO</span>
-
-                        <!-- Title -->
-                        <h3 class="h3-lg">Покупайте виртуальные гигабайты для майнинга Zethereum</h3>
-
-                        <!-- List -->
-                        <ul class="txt-list mb-35">
-                            <li>Отправьте не менее 250.33 SIGNA на Signum адрес: S-X3F9-KL43-GPMV-2YTHN</li>
-                            <li>Отправляйте SIGNA только со своего персонального Signum адреса</li>
-                            <li>Смарт контракт отчеканит и отправит на адрес отправителя токены VGB, которые будут добывать для вас ZTH в режиме 24/7</li>
-                            <li>Токены VGB легко купить и продать на DEX как и сам ZTH</li>
-                            <li>Владение виртуальными гигабайтами выраженными в токенах VGB позволяет вам майнить криптовалюту Zethereum #ZTH.
-                            1 виртуальный HDD = 1 токену VGB = 1 виртуальному гигабайту мощности для майнинга криптовалюты ZTH.</li>
-                            
-                        </ul>
-                    </div>
-                </div>    <!-- END TEXT BLOCK -->     
-
-            </div>      <!-- End row -->
-        </div>     <!-- End container -->
-    </section>    <!-- END INFO-2 -->
-
-    <section class="info-1-row pt-100 info-section division">
-        <div class="container">
-            <div class="row d-flex align-items-center">
-
-
-                <!-- IMAGE BLOCK -->
-              
-                
-                
-        </div>     <!-- End container -->
-    </section>    <!-- END INFO-1 -->
-
-
-    <!-- INFO-8
-    ============================================= -->
-    <section id="info-8" class="info-8-row bg-map bg-white bg-fixed pt-100 info-section division">
-        <div class="container blue-color">
-            <div class="row">
-
-
-                <!-- TEXT BLOCK -->
-                <div class="col-lg-10 offset-lg-1">
-                    <div class="txt-block text-center mb-50 wow fadeInUp" data-wow-delay="0.3s">
-
-                        <!-- Title -->
-                        <h3 class="h3-lg">Zethereum - лучшее решение для виртуального майнинга</h3>
-
-                        <!-- Text -->
-                        <p class="p-md">Экономика Zethereum построена на принципе привлечения капитала и вовлечения партнерских проектов.
-                                        Она не является циклической. Инвестируя свои средства в токены ZTH вы получаете реальную прибыль.
-                                        Механизмы смарт контрактов системы позволяют расширять экосистему и масштабировать бизнес модель.
-                        </p>
-                    </div>
-                </div>    <!-- END TEXT BLOCK -->
-
-                <!-- IMAGE BLOCK -->
-                <div class="col-md-12">
-                    <div class="img-block wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="0.8s">
-                        <picture>
-                            <source type="image/webp" srcset="images/mac-screen.png">
-                            <img class="img-fluid" src="images/mac-screen.png" alt="Wallet Desktop on Mac">
-                        </picture>
-                    </div>
-                </div>
-
-            </div>      <!-- End row -->
-        </div>     <!-- End container -->
-    </section>    <!-- END INFO-8 -->
-
-
-    <!-- FOOTER-5
-    ============================================= -->
-    <footer id="footer-5" class="wide-50 footer bg-blue division">
-        <div class="container">
-
-
-            <!-- FOOTER CONTENT -->
-            <div class="row">
-
-
-                <!-- FOOTER INFO -->
-                <div class="col-md-4 col-lg-3">
-                    <div class="footer-info mb-40">
-
-                        <!-- Footer Logo -->
-                        <img src="images/logo.png" height="60" alt="header-logo">
-
-
-                        <!-- Title -->
-                        <h5 class="h5-sm">Обозреватели сети</h5>
-
-                        <!-- Footer Links -->
-                        <ul class="foo-links clearfix">
-                            <li><a href="https://chain.signum.network/asset/9518219425200752102" class="foo-twitter"
-                                   target="_blank">The Signum Network</a></li>
-                            <li><a href="https://tonscan.org/ru/jetton/EQC2C5LcBkURK-cBJScofavVFei_q80eU8Ih-c2BfPstZdZm" class="foo-discord" target="_blank">The Open Network</a>
-                            </li>                        
-                            
-                        </ul>
-                        
-                    </div>
-                </div>
-
-
-                <!-- FOOTER LINKS -->
-                <div class="col-md-3 col-lg-3 offset-lg-1">
-                    <div class="footer-links">
-                        
-
-                        <!-- Title -->
-                        <h5 class="h5-sm">Zethereum Virtual Mining</h5>
-
-                        <!-- Footer Links -->
-                        <ul class="foo-links clearfix">
-                            <li><a class="internal-link" href="#features">Features</a></li>
-                            <li><a class="internal-link" href="#community">Community</a></li>
-                            <li><a class="internal-link" href="#signumjs">Майнинг</a></li>
-                            <li><a class="internal-link" href="#downloads">Download</a></li>
-                            <li><a class="internal-link" href="https://signum.network" target="_blank">Signum
-                                Network</a></li>
-                            <li><a class="internal-link" href="https://github.com/RoyalRanger"
-                                   target="_blank">Github</a></li>
-                        </ul>
-
-                    </div>
-                </div>
-               
-
-                <!-- FOOTER LINKS -->
-                <div class="col-md-2 col-lg-3">
-                    <div class="footer-links">
-
-                        <!-- Title -->
-                        <h5 class="h5-sm">Контакты</h5>
-
-                        <!-- Footer Links -->
-                        <ul class="foo-links clearfix">
-                            <li><a href="https://twitter.com/AleksejRR" class="foo-twitter"
-                                   target="_blank">Twitter</a></li>
-                            <li><a href="https://zethereum.ru" class="foo-discord" target="_blank">Сайт Zethereum.ru</a>
-                            </li>
-                            <li><a href="https://t.me/Zethereum_bot" class="foo-reddit" target="_blank">BOT</a>
-                            </li>
-                            <li><a href="https://t.me/Zethereum_ZTH" class="foo-telegram" target="_blank">Telegram</a>
-                            </li>
-                            <li><a class="internal-link" href="https://phoenix-wallet.rocks">Phoenix Wallet</a></li>
-                            <li><a class="internal-link" href="https://btdex.trade">BTDEX Wallet</a></li>                            
-                            
-                        </ul>
-
-                    </div>
-                </div>
-
-            </div>     <!-- END FOOTER CONTENT -->
-
-
-            <!-- BOTTOM FOOTER -->
-            <div class="bottom-footer">
-                <div class="row">
-
-                    <!-- FOOTER COPYRIGHT -->
-                    <div class="col-md-12">
-                        <div class="footer-copyright">
-                            <p id="rights-notice" class="p-sm">Test</p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>    <!-- END BOTTOM FOOTER -->
-
-
-        </div>        <!-- End container -->
-    </footer>    <!-- END FOOTER-5 -->
-
-
-</div>    <!-- END PAGE CONTENT -->
-
-
-<!-- EXTERNAL SCRIPTS
-============================================= -->
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/fontawesome.min.js"></script>
-<script src="js/modernizr.custom.js"></script>
-<script src="js/retina.js"></script>
-<script src="js/jquery.appear.js"></script>
-<script src="js/jquery.easing.js"></script>
-<script src="js/jquery.scrollto.js"></script>
-<script src="js/owl.carousel.min.js"></script>
-<script src="js/wow.js"></script>
-
-<!-- Custom Scripts -->
-<script src="js/github.js"></script>
-<script src="js/custom.js"></script>
-
-<!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
-<!-- [if lt IE 9]>
-<script src="js/html5shiv.js" type="text/javascript"></script>
-<script src="js/respond.min.js" type="text/javascript"></script>
-<![endif] -->
-
-<!-- Google Analytics: Change UA-XXXXX-X to be your site's ID. Go to http://www.google.com/analytics/ for more information. -->
-<!--
 <script>
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-XXXXX-X']);
-    _gaq.push(['_trackPageview']);
+  // Nav toggle
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
 
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+  // Copy contract address
+  function copyContract() {
+    navigator.clipboard.writeText('S-X3F9-KL43-GPMV-2YTHN').then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ Скопировано';
+      btn.style.color = '#34d399';
+      setTimeout(() => { btn.textContent = 'Копировать'; btn.style.color = ''; }, 2000);
+    });
+  }
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
--->
-
-
 </body>
-
-
 </html>
